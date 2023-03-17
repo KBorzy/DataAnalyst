@@ -2,6 +2,7 @@ from check_log import check_log
 from check_time import czas_trwania
 from check_temp import sprawdz_temperatury
 from longest_overheating import time_overheating
+from overheating_periods import overheating_periods
 
 def generuj_raport(src):
     wadliwe_logi = []
@@ -38,7 +39,8 @@ def generuj_raport(src):
     temperatura_max = temperatury['max_temp']
     temperatura_avg = temperatury['avg_temp']
     najdluzszy_czas_przegrzania = time_overheating(poprawne_logi)
-
+    liczba_okresow_przegrzania = overheating_periods(poprawne_logi)
+    print(liczba_okresow_przegrzania)
     # print(poprawne_logi)
 
 generuj_raport("./przyklady/przyklad3.txt")
