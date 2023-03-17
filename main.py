@@ -27,7 +27,7 @@ def generuj_raport(src):
         poprawne_logi = []
         for linia in plik:
             liczba_logow += 1
-            # szukamy wadliwe logi
+
             if check_log(linia):
                 wadliwe_logi.append(linia)
                 liczba_wadliwych_logow += 1
