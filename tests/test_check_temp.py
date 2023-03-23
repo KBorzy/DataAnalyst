@@ -20,4 +20,5 @@ def test_sprawdz_temperatury():
     logi = ['2023-01-01 23:00 90C']
     mapa_temperatur = c.sprawdz_temperatury(logi)
 
-    assert mapa_temperatur is None
+    expected = {'avg_temp': '90C', 'max_temp': '90C', 'min_temp': '90C'}
+    assert mapa_temperatur == expected

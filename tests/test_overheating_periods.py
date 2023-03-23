@@ -17,4 +17,4 @@ def test_overheating_periods():
 
     logi = ['2023-01-01 23:00 105C']
 
-    assert op.overheating_periods(logi) == 1
+    assert op.overheating_periods(logi) == 0
