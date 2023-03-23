@@ -1,3 +1,6 @@
+# https://github.com/KBorzy/ProjektZaliczeniowy
+# Krzysztof Borzyszkowski
+
 from check_log import check_log
 from check_time import czas_trwania
 from check_temp import sprawdz_temperatury
@@ -7,12 +10,12 @@ import json
 
 def generuj_raport(src):
     wadliwe_logi = []
-    procent_wadliwych_logow = 0.0
+    procent_wadliwych_logow = '100.0'
+    procent_wadliwych_logow_float = 0.0
     czas_trwania_raportu = 0
     temperatura_max = None
     temperatura_min = None
     temperatura_avg = 0.0
-    liczba_pomiarow_temperatury = 0
     najdluzszy_czas_przegrzania = 0
     liczba_okresow_przegrzania = 0
     problemy = {
@@ -35,20 +38,21 @@ def generuj_raport(src):
                 poprawne_logi.append(linia)
 
         if liczba_wadliwych_logow > 0:
-            procent_wadliwych_logow = (liczba_wadliwych_logow / liczba_logow) * 100
-
+            procent_wadliwych_logow_float = (liczba_wadliwych_logow / liczba_logow) * 100
+            procent_wadliwych_logow = str(procent_wadliwych_logow_float)
         for i in range(len(wadliwe_logi)):
             wadliwe_logi[i] = wadliwe_logi[i].strip()
 
     czas_trwania_raportu = czas_trwania(poprawne_logi)
     temperatury = sprawdz_temperatury(poprawne_logi)
-    temperatura_min = temperatury['min_temp']
-    temperatura_max = temperatury['max_temp']
-    temperatura_avg = temperatury['avg_temp']
-    najdluzszy_czas_przegrzania = time_overheating(poprawne_logi)
-    liczba_okresow_przegrzania = overheating_periods(poprawne_logi)
+    if len(poprawne_logi)>0:
+        temperatura_min = temperatury['min_temp']
+        temperatura_max = temperatury['max_temp']
+        temperatura_avg = temperatury['avg_temp']
+        najdluzszy_czas_przegrzania = time_overheating(poprawne_logi)
+        liczba_okresow_przegrzania = overheating_periods(poprawne_logi)
 
-    if procent_wadliwych_logow > 10:
+    if procent_wadliwych_logow_float > 10:
         problemy['wysoki_poziom_zaklocen_EM'] = True
 
     if najdluzszy_czas_przegrzania > 10:
@@ -71,9 +75,5 @@ def generuj_raport(src):
         }
     }
     raport_json = json.dumps(raport, indent=2)
-    print(raport_json)
-
-generuj_raport("./przyklady/przyklad1.txt")
-generuj_raport("./przyklady/przyklad2.txt")
-generuj_raport("./przyklady/przyklad3.txt")
+    return raport
 
