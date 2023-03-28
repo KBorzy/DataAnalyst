@@ -1,6 +1,5 @@
 from check_correct_time import check_correct_time
 
-
 def overheating_periods(logs):
     if len(logs) > 0:
         logs = check_correct_time(logs)

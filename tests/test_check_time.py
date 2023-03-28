@@ -9,10 +9,10 @@ logs = ['2023-01-01 23:00 90C',
         ]
 
 
-def test_czas_trwania():
-    assert c.czas_trwania([]) == 0
-    assert c.czas_trwania(['2023-01-01 23:00 90C']) == 0
+def test_report_duration():
+    assert c.report_duration([]) == 0
+    assert c.report_duration(['2023-01-01 23:00 90C']) == 0
 
 
-def tast_valid_czas_trwania():
-    assert c.czas_trwania(logs) == time_elapse.time_elapse('2023-01-01 23:00', '2023-01-01 01:00')
+def tast_valid_report_duration():
+    assert c.report_duration(logs) == time_elapse.time_elapse('2023-01-01 23:00', '2023-01-01 01:00')

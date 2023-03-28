@@ -1,86 +1,81 @@
-# https://github.com/KBorzy/ProjektZaliczeniowy
-# Krzysztof Borzyszkowski
-
 from check_log import check_log
-from check_time import czas_trwania
-from check_temp import sprawdz_temperatury
-from longest_overheating import time_overheating
+from check_time import report_duration
+from check_temp import check_temperatures
+from longest_overheating import calculate_overheating_period
 from overheating_periods import overheating_periods
-import json
 
-
-def generuj_raport(src):
-    wadliwe_logi = []
-    procent_wadliwych_logow = '100.0'
-    procent_wadliwych_logow_float = 0.0
-    czas_trwania_raportu = 0
-    temperatura_max_str = None
-    temperatura_min_str = None
-    temperatura_avg_str = None
-    najdluzszy_czas_przegrzania = 0
-    liczba_okresow_przegrzania = 0
-    problemy = {
-        'wysoki_poziom_zaklocen_EM': False,
-        'wysokie_ryzyko_uszkodzenia_silnika_z_powodu_temperatury': False
+def generate_report(src):
+    invalid_logs = []
+    invalid_logs_percentage = '100.0'
+    invalid_logs_percentage_float = 0.0
+    report_duration = 0
+    max_temp_str = None
+    min_temp_str = None
+    avg_temp_str = None
+    longest_overheating_period = 0
+    number_of_overheating_periods = 0
+    issues = {
+        'high_EM_interference_level': False,
+        'high_risk_of_engine_damage_due_to_temperature': False
     }
 
-    with open(src, 'r') as plik:
-        liczba_logow = 0
-        liczba_wadliwych_logow = 0
-        poprawne_logi = []
-        for linia in plik:
-            liczba_logow += 1
+    with open(src, 'r') as file:
+        number_of_logs = 0
+        number_of_invalid_logs = 0
+        valid_logs = []
+        for line in file:
+            number_of_logs += 1
 
-            if check_log(linia):
-                wadliwe_logi.append(linia)
-                liczba_wadliwych_logow += 1
+            if check_log(line):
+                invalid_logs.append(line)
+                number_of_invalid_logs += 1
             else:
-                poprawne_logi.append(linia)
+                valid_logs.append(line)
 
-        if liczba_wadliwych_logow > 0:
-            procent_wadliwych_logow_float = (liczba_wadliwych_logow / liczba_logow) * 100
-            procent_wadliwych_logow_float = round(procent_wadliwych_logow_float,1)
-            procent_wadliwych_logow = str(procent_wadliwych_logow_float)
-        if liczba_wadliwych_logow == 0 and len(poprawne_logi) > 0:
-            procent_wadliwych_logow = "0.0"
-        for i in range(len(wadliwe_logi)):
-            wadliwe_logi[i] = wadliwe_logi[i].strip()
+        if number_of_invalid_logs > 0:
+            invalid_logs_percentage_float = (number_of_invalid_logs / number_of_logs) * 100
+            invalid_logs_percentage_float = round(invalid_logs_percentage_float, 1)
+            invalid_logs_percentage = str(invalid_logs_percentage_float)
+        if number_of_invalid_logs == 0 and len(valid_logs) > 0:
+            invalid_logs_percentage = "0.0"
+        for i in range(len(invalid_logs)):
+            invalid_logs[i] = invalid_logs[i].strip()
 
-    czas_trwania_raportu = czas_trwania(poprawne_logi)
+    report_duration = report_duration(valid_logs)
 
-    if len(poprawne_logi) > 0:
-        temperatury = sprawdz_temperatury(poprawne_logi)
-        temperatura_min = temperatury['min_temp']
-        temperatura_max = temperatury['max_temp']
-        temperatura_avg = temperatury['avg_temp']
-        temperatura_min_str = str(temperatura_min)
-        temperatura_max_str = str(temperatura_max)
-        temperatura_avg_str = str(temperatura_avg)
-        najdluzszy_czas_przegrzania = time_overheating(poprawne_logi)
-        liczba_okresow_przegrzania = overheating_periods(poprawne_logi)
+    if len(valid_logs) > 0:
+        temperatures = check_temperatures(valid_logs)
+        min_temp = temperatures['min_temp']
+        max_temp = temperatures['max_temp']
+        avg_temp = temperatures['avg_temp']
+        min_temp_str = str(min_temp)
+        max_temp_str = str(max_temp)
+        avg_temp_str = str(avg_temp)
+        longest_overheating_period = calculate_overheating_period(valid_logs)
+        number_of_overheating_periods = overheating_periods(valid_logs)
 
-    if procent_wadliwych_logow_float > 10:
-        problemy['wysoki_poziom_zaklocen_EM'] = True
+    if invalid_logs_percentage_float > 10:
+        issues['high_EM_interference_level'] = True
 
-    if najdluzszy_czas_przegrzania > 10:
-        problemy['wysokie_ryzyko_uszkodzenia_silnika_z_powodu_temperatury'] = True
+    if longest_overheating_period > 10:
+        issues['high_risk_of_engine_damage_due_to_temperature'] = True
 
-    raport = {
-        "wadliwe_logi": wadliwe_logi,
-        "procent_wadliwych_logow": procent_wadliwych_logow,
-        "czas_trwania_raportu": czas_trwania_raportu,
-        "temperatura": {
-            "max": temperatura_max_str,
-            "min": temperatura_min_str,
-            "srednia": temperatura_avg_str
+    report = {
+        "invalid_logs": invalid_logs,
+        "invalid_logs_percentage": invalid_logs_percentage,
+        "report_duration": report_duration,
+        "temperature": {
+            "max": max_temp_str,
+            "min": min_temp_str,
+            "average": avg_temp_str
         },
-        "najdluzszy_czas_przegrzania": najdluzszy_czas_przegrzania,
-        "liczba_okresow_przegrzania": liczba_okresow_przegrzania,
-        "problemy": {
-            "wysoki_poziom_zaklocen_EM": problemy['wysoki_poziom_zaklocen_EM'],
-            "wysokie_ryzyko_uszkodzenia_silnika_z_powodu_temperatury": problemy[
-                'wysokie_ryzyko_uszkodzenia_silnika_z_powodu_temperatury']
+        "longest_overheating_period": longest_overheating_period,
+        "number_of_overheating_periods": number_of_overheating_periods,
+        "issues": {
+            "high_EM_interference_level": issues['high_EM_interference_level'],
+            "high_risk_of_engine_damage_due_to_temperature": issues[
+                'high_risk_of_engine_damage_due_to_temperature']
         }
     }
 
-    return raport
+    return report

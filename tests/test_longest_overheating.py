@@ -2,7 +2,7 @@ import pytest
 from .. import longest_overheating as lo
 
 
-def test_time_overheating():
+def test_calculate_overheating_period():
     logs = ['2023-01-01 23:00 90C',
             '2023-01-01 23:50 110C',
             '2023-01-02 00:10 95C',
@@ -13,15 +13,15 @@ def test_time_overheating():
 
     expected_result = 40
 
-    assert lo.time_overheating(logs) == expected_result
+    assert lo.calculate_overheating_period(logs) == expected_result
 
     logs = ['2023-01-01 23:00 102C']
 
-    assert lo.time_overheating(logs) == 0
+    assert lo.calculate_overheating_period(logs) == 0
 
     logs = ['2023-01-01 23:00 102C',
             '2023-01-01 23:30 105C']
 
-    assert lo.time_overheating(logs) == 30
+    assert lo.calculate_overheating_period(logs) == 30
 
-    assert lo.time_overheating([]) == 0
+    assert lo.calculate_overheating_period([]) == 0

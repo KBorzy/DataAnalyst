@@ -1,38 +1,39 @@
-def sprawdz_temperatury(logi):
-    if len(logi) > 1:
-        temperatury = []
-        for log in logi:
+
+def check_temperatures(logs):
+    if len(logs) > 1:
+        temperatures = []
+        for log in logs:
             log = log.split()
-            temperatura = log[2].rstrip("C")
-            temperatury.append(float(temperatura))
+            temperature = log[2].rstrip("C")
+            temperatures.append(float(temperature))
 
-        min_temp = min(temperatury)
-        max_temp = max(temperatury)
-        avg_temp = round(sum(temperatury) / len(temperatury), 1)
+        min_temp = min(temperatures)
+        max_temp = max(temperatures)
+        avg_temp = round(sum(temperatures) / len(temperatures), 1)
 
-        mapa_temperatur = dict()
-        mapa_temperatur["min_temp"] = min_temp
-        mapa_temperatur["max_temp"] = max_temp
-        mapa_temperatur["avg_temp"] = avg_temp
+        temperature_map = dict()
+        temperature_map["min_temp"] = min_temp
+        temperature_map["max_temp"] = max_temp
+        temperature_map["avg_temp"] = avg_temp
 
-        return mapa_temperatur
-    elif len(logi) == 1:
-        temperatury = []
+        return temperature_map
+    elif len(logs) == 1:
+        temperatures = []
 
-        log = logi[0]
+        log = logs[0]
         log = log.split()
-        temperatura = log[2].rstrip("C")
-        temperatury.append(float(temperatura))
+        temperature = log[2].rstrip("C")
+        temperatures.append(float(temperature))
 
         min_temp = log[2]
         max_temp = log[2]
         avg_temp = log[2]
 
-        mapa_temperatur = dict()
-        mapa_temperatur["min_temp"] = min_temp
-        mapa_temperatur["max_temp"] = max_temp
-        mapa_temperatur["avg_temp"] = avg_temp
+        temperature_map = dict()
+        temperature_map["min_temp"] = min_temp
+        temperature_map["max_temp"] = max_temp
+        temperature_map["avg_temp"] = avg_temp
 
-        return mapa_temperatur
+        return temperature_map
     else:
         return None
